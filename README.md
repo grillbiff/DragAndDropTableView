@@ -28,9 +28,9 @@ DragAndDropTableView operates the same way your standard UITableView does except
 @end
 ```
 
-As you can see all methods are optional. If you choose to implement the protocols the UITableViewDataSource used by your table should implement the DragAndDropTableViewDataSource protocol and your UITableViewDelegate should implement the DragAndDropTableViewDelegate.
+As you can see all methods are optional. If you choose to implement the protocols the UITableViewDataSource used by your table should implement the DragAndDropTableViewDataSource protocol and your UITableViewDelegate should implement the DragAndDropTableViewDelegate protocol.
 
-See the example project for further instructions.
+See the example project for further help.
 
 ## Licence
 DragAndDropTableView is available under the MIT license. See the LICENSE file for more info.
