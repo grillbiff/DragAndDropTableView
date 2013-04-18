@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <Group
+      location = "group:DragAndDropTableView"
+      name = "DragAndDropTableView">
+      <FileRef
+         location = "group:DragAndDropTableView.h">
+      </FileRef>
+      <FileRef
+         location = "group:DragAndDropTableView.m">
+      </FileRef>
+      <FileRef
+         location = "group:UIView+Snapshot.h">
+      </FileRef>
+      <FileRef
+         location = "group:UIView+Snapshot.m">
+      </FileRef>
+   </Group>
+   <FileRef
+      location = "group:Examples/DragAndDropExample.xcodeproj">
+   </FileRef>
+</Workspace>
