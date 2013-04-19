@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "DragAndDropTableView.h"
 
-@interface DNDViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,DragAndDropTableViewDataSource>
+@interface DNDViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,DragAndDropTableViewDataSource,DragAndDropTableViewDelegate>
 {
     NSMutableArray *_datasource;
     DragAndDropTableView *_tableView;

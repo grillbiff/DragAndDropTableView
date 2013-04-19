@@ -7,6 +7,7 @@
 //
 
 #import "DNDViewController.h"
+#import <QuartzCore/QuartzCore.h>
 
 @interface DNDViewController ()
 
@@ -44,10 +45,8 @@
     // Dispose of any resources that can be recreated.
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
-{
-    return 10;
-}
+#pragma mark UITableViewDataSource
+
 
 -(int)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -78,7 +77,6 @@
     return YES;
 }
 
-
 -(void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath
 {
     NSObject *o = [[_datasource objectAtIndex:sourceIndexPath.section] objectAtIndex:sourceIndexPath.row];
@@ -91,12 +89,12 @@
     if(UITableViewCellEditingStyleInsert == editingStyle)
     {
         // inserts are always done at the end
- 
+        
         [tableView beginUpdates];
         [_datasource addObject:[NSMutableArray array]];
         [tableView insertSections:[NSIndexSet indexSetWithIndex:[_datasource count]-1] withRowAnimation:UITableViewRowAnimationAutomatic];
         [tableView endUpdates];
-  
+        
     }
     else if(UITableViewCellEditingStyleDelete == editingStyle)
     {
@@ -118,16 +116,48 @@
     }
 }
 
+#pragma mark -
+
+#pragma mark UITableViewDelegate
+
+
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return 37;
-//    return [[_datasource objectAtIndex:indexPath.section] count] == 0 ? 0 : 37;
 }
+
+-(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    return 10;
+}
+
+#pragma mark -
+
+#pragma mark DragAndDropTableViewDataSource
 
 -(BOOL)canCreateNewSection:(NSInteger)section
 {
     return YES;
 }
+
+#pragma mark -
+
+#pragma mark DragAndDropTableViewDelegate
+
+-(void)tableView:(UITableView *)tableView willBeginDraggingCellAtIndexPath:(NSIndexPath *)indexPath placeholderImageView:(UIImageView *)placeHolderImageView
+{
+    // this is the place to edit the snapshot of the moving cell
+    // add a shadow 
+    placeHolderImageView.layer.shadowOpacity = .3;
+    placeHolderImageView.layer.shadowRadius = 1;
+}
+
+-(void)tableView:(DragAndDropTableView *)tableView didEndDraggingCellToIndexPath:(NSIndexPath *)indexPath placeHolderView:(UIImageView *)placeholderImageView
+{
+    // can't think of anything useful to do here, really.
+}
+
+#pragma mark -
 
 
 @end
