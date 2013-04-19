@@ -122,15 +122,6 @@ const static CGFloat kAutoScrollingThreshold = 60;
         // Update the snap shot's position
         _cellSnapShotImageView.center = CGPointMake(_cellSnapShotImageView.center.x, _latestTouchPoint.y + _touchOffset.y);
         
-        // If we are autoscrolling we won't propose a path change beacuse of a bug that might occur when suggesting an index position below the bottom most visible table footer view
-//        [self legalizeAutoscrollDistance];
-/*
-        if(_autoscrollDistance > 0)
-        {
-            return;
-        }
-*/
-        
         NSIndexPath *newIndexPath = [self indexPathForRowAtPoint:_latestTouchPoint];
         if(newIndexPath)
         {
@@ -189,12 +180,7 @@ const static CGFloat kAutoScrollingThreshold = 60;
                    [self.dataSource performSelector:@selector(canCreateNewSection:) withObject:[NSNumber numberWithInteger:proposedIndexPath.section]])
                 {
                     [self.dataSource tableView:self commitEditingStyle:UITableViewCellEditingStyleInsert forRowAtIndexPath:proposedIndexPath];
-/*
-                    [self beginUpdates];
-                    [self moveRowAtIndexPath:_movingIndexPath toIndexPath:proposedIndexPath];
-                    [self.dataSource tableView:self moveRowAtIndexPath:_movingIndexPath toIndexPath:proposedIndexPath];
-                    [self endUpdates];
-*/ 
+
                     _tempNewSectionIndexPath = proposedIndexPath;
                     _lastIndexPathValid = YES;
                     
@@ -216,9 +202,8 @@ const static CGFloat kAutoScrollingThreshold = 60;
         // since anything can happen with the table structure in the following delegate call we use the cell as reference rather than the indexpath to it
         UITableViewCell *cell = [self cellForRowAtIndexPath:_movingIndexPath];
 
-        if([self.delegate respondsToSelector:@selector(tableView:didEndDraggingCellWithPlaceHolderView:)])
-            [((NSObject<DragAndDropTableViewDelegate> *)self.delegate) tableView:self didEndDraggingCellWithPlaceHolderView:_cellSnapShotImageView];
-        
+        if([self.delegate respondsToSelector:@selector(tableView:didEndDraggingCellToIndexPath:placeHolderView:)])
+            [((NSObject<DragAndDropTableViewDelegate> *)self.delegate) tableView:self didEndDraggingCellToIndexPath:_movingIndexPath placeHolderView:_cellSnapShotImageView];
         
         // remove image
         [UIView animateWithDuration:.3 animations:^{
