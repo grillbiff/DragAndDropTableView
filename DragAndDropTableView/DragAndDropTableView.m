@@ -33,7 +33,6 @@ const static CGFloat kAutoScrollingThreshold = 60;
     NSObject<UITableViewDelegate> *_delegate;
 }
 
-@property (nonatomic) NSObject<UITableViewDataSource> *dataSource;
 
 -(id)initWithDelegate:(id<UITableViewDelegate>)delegate;
 
@@ -228,20 +227,13 @@ const static CGFloat kAutoScrollingThreshold = 60;
 {
     _proxyDataSource = dataSource ? [[ProxyDataSource alloc] initWithDataSource:dataSource] : nil;
     
-    if(_proxyDelegate)
-        _proxyDelegate.dataSource = _proxyDataSource.dataSource;
-    
     [super setDataSource:_proxyDataSource];
 }
 
 -(void)setDelegate:(id<UITableViewDelegate>)delegate
 {
     _proxyDelegate = delegate ? [[ProxyDelegate alloc] initWithDelegate:delegate] : nil;
-    
-    if(_proxyDataSource)
-        _proxyDelegate.dataSource = _proxyDataSource.dataSource;
-    
-    
+        
     [super setDelegate:_proxyDelegate];
 } 
 
@@ -417,7 +409,6 @@ const static CGFloat kAutoScrollingThreshold = 60;
 @end
 
 @implementation ProxyDelegate
-@synthesize dataSource = _dataSource;
 
 -(id)initWithDelegate:(id<UITableViewDelegate>)delegate
 {
@@ -433,7 +424,7 @@ const static CGFloat kAutoScrollingThreshold = 60;
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    int count = [_dataSource tableView:tableView numberOfRowsInSection:indexPath.section];
+    int count = [tableView.dataSource tableView:tableView numberOfRowsInSection:indexPath.section];
     return count == 0 ? 0 : [_delegate tableView:tableView heightForRowAtIndexPath:indexPath];
 }
 

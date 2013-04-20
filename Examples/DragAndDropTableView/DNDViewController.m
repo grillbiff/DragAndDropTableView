@@ -45,8 +45,9 @@
     // Dispose of any resources that can be recreated.
 }
 
-#pragma mark UITableViewDataSource
+#pragma mark -
 
+#pragma mark UITableViewDataSource
 
 -(int)numberOfSectionsInTableView:(UITableView *)tableView
 {
