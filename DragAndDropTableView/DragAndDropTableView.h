@@ -41,6 +41,14 @@
  @param placeholderImageView The snapshot of the cell.
 */
 -(void)tableView:(DragAndDropTableView *)tableView didEndDraggingCellToIndexPath:(NSIndexPath *)indexPath placeHolderView:(UIImageView *)placeholderImageView;
+
+/**
+ Asks the delegate for the height of the distance between the header view and footer view of an empty section.
+ 
+ @param tableView The table view requesting this information.
+ @param section The location of the section
+*/
+-(CGFloat)tableView:(DragAndDropTableView *)tableView heightForEmptySection:(int)section;
 @end
 
 @interface DragAndDropTableView : UITableView<UITableViewDataSource>

@@ -121,6 +121,10 @@
 
 #pragma mark UITableViewDelegate
 
+-(UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return UITableViewCellEditingStyleDelete;
+}
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -155,7 +159,24 @@
 
 -(void)tableView:(DragAndDropTableView *)tableView didEndDraggingCellToIndexPath:(NSIndexPath *)indexPath placeHolderView:(UIImageView *)placeholderImageView
 {
-    // can't think of anything useful to do here, really.
+    // The cell has been dropped. Remove all empty sections (if you want to)
+    NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSet];
+    for(int i = 0; i < _datasource.count; i++)
+    {
+        NSArray *ary = [_datasource objectAtIndex:i];
+        if(ary.count == 0)
+            [indexSet addIndex:i];
+    }
+    
+    [tableView beginUpdates];
+    [tableView deleteSections:indexSet withRowAnimation:UITableViewRowAnimationAutomatic];
+    [_datasource removeObjectsAtIndexes:indexSet];
+    [tableView endUpdates];
+}
+
+-(CGFloat)tableView:tableView heightForEmptySection:(int)section
+{
+    return 10;
 }
 
 #pragma mark -

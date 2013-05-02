@@ -256,27 +256,24 @@ const static CGFloat kAutoScrollingThreshold = 60;
 
     _autoscrollDistance = 0;
     
-    //
     if (CGRectGetMaxY(snapshot.frame) < self.contentSize.height )
     {
-    
-    // only autoscroll if the content is larger than the view
-    if (self.contentSize.height > self.frame.size.height)
-    {
-        // only autoscroll if the thumb is overlapping the thumbScrollView
-        if (CGRectIntersectsRect([snapshot frame], [self bounds]))
+        // only autoscroll if the content is larger than the view
+        if (self.contentSize.height > self.frame.size.height)
         {
-            float distanceFromTop = _latestTouchPoint.y - CGRectGetMinY(self.bounds);
-            float distanceFromBottom = CGRectGetMaxY(self.bounds) - _latestTouchPoint.y;
-            
-            if (distanceFromTop < kAutoScrollingThreshold) {
-                _autoscrollDistance = [self autoscrollDistanceForProximityToEdge:distanceFromTop] * -1; // if scrolling up, distance is negative
-            } else if (distanceFromBottom < kAutoScrollingThreshold) {
-                _autoscrollDistance = [self autoscrollDistanceForProximityToEdge:distanceFromBottom];
+            // only autoscroll if the thumb is overlapping the thumbScrollView
+            if (CGRectIntersectsRect([snapshot frame], [self bounds]))
+            {
+                float distanceFromTop = _latestTouchPoint.y - CGRectGetMinY(self.bounds);
+                float distanceFromBottom = CGRectGetMaxY(self.bounds) - _latestTouchPoint.y;
+                
+                if (distanceFromTop < kAutoScrollingThreshold) {
+                    _autoscrollDistance = [self autoscrollDistanceForProximityToEdge:distanceFromTop] * -1; // if scrolling up, distance is negative
+                } else if (distanceFromBottom < kAutoScrollingThreshold) {
+                    _autoscrollDistance = [self autoscrollDistanceForProximityToEdge:distanceFromBottom];
+                }
             }
         }
-    }
-        
     }
         
     // if no autoscrolling, stop and clear timer
@@ -362,7 +359,7 @@ const static CGFloat kAutoScrollingThreshold = 60;
 
     [_dataSource tableView:tableView moveRowAtIndexPath:sourceIndexPath toIndexPath:destinationIndexPath];
     
-    // if there source section is empty after the update, a fake row must be inserted
+    // if the source section is empty after the update, a fake row must be inserted
     rows = [_dataSource tableView:tableView numberOfRowsInSection:sourceIndexPath.section];
     if(rows == 0)
     {
@@ -434,8 +431,35 @@ const static CGFloat kAutoScrollingThreshold = 60;
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    int count = [tableView.dataSource tableView:tableView numberOfRowsInSection:indexPath.section];
-    return count == 0 ? 0 : [_delegate tableView:tableView heightForRowAtIndexPath:indexPath];
+    int count = [((ProxyDataSource *)tableView.dataSource).dataSource tableView:tableView numberOfRowsInSection:indexPath.section];
+
+    CGFloat height = 0;
+    if(count > 0)
+        height = [_delegate tableView:tableView heightForRowAtIndexPath:indexPath];
+    else if([_delegate respondsToSelector:@selector(tableView:heightForEmptySection:)])
+        height = [((NSObject<DragAndDropTableViewDelegate> *)_delegate) tableView:(DragAndDropTableView *)tableView heightForEmptySection:indexPath.section];
+    else
+        height = 0;
+
+    return height;
+}
+
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    int rows = [((ProxyDataSource *)tableView.dataSource).dataSource tableView:tableView numberOfRowsInSection:indexPath.section];
+    
+    // you can't edit/delete the place holder cells
+    if(rows == 0)
+        return UITableViewCellEditingStyleNone;
+    else if([_delegate respondsToSelector:@selector(tableView:editingStyleForRowAtIndexPath:)])
+        return [_delegate tableView:tableView editingStyleForRowAtIndexPath:indexPath];
+    else
+    {
+        // if the cell is in editing mode it should return UITableViewCellEditingStyleDelete (according to the docs) otherwise no style
+        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+        return cell.editing ? UITableViewCellEditingStyleDelete : UITableViewCellEditingStyleNone;
+    }
+    
 }
 
 #pragma mark -
