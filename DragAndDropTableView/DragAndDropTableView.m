@@ -53,6 +53,16 @@ const static CGFloat kAutoScrollingThreshold = 60;
     return self;
 }
 
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        // Initialization code
+        [self setup];
+    }
+    return self;
+}
+
 -(void)setup
 {
     // register gesture recognizer
