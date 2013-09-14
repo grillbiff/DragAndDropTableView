@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>691062BC-3F8A-466A-9762-7EAD848DB712</string>
+	<key>IDESourceControlProjectName</key>
+	<string>DragAndDropTableView</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>862AF4A7-0360-4EBF-9077-E9DC51B6D430</key>
+		<string>https://github.com/grillbiff/DragAndDropTableView.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>DragAndDropTableView.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>862AF4A7-0360-4EBF-9077-E9DC51B6D430</key>
+		<string>..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/grillbiff/DragAndDropTableView.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>862AF4A7-0360-4EBF-9077-E9DC51B6D430</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>862AF4A7-0360-4EBF-9077-E9DC51B6D430</string>
+			<key>IDESourceControlWCCName</key>
+			<string>DragAndDropTableView</string>
+		</dict>
+	</array>
+</dict>
+</plist>

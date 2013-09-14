@@ -29,6 +29,7 @@
         [self.view addSubview:_tableView];
         _tableView.delegate = self;
         _tableView.dataSource = self;
+        _tableView.contentInset = UIEdgeInsetsMake(20, 0, 0, 0);
     }
     return self;
 }
@@ -155,6 +156,8 @@
     // add a shadow 
     placeHolderImageView.layer.shadowOpacity = .3;
     placeHolderImageView.layer.shadowRadius = 1;
+    
+
 }
 
 -(void)tableView:(DragAndDropTableView *)tableView didEndDraggingCellToIndexPath:(NSIndexPath *)indexPath placeHolderView:(UIImageView *)placeholderImageView
