@@ -233,6 +233,16 @@ const static CGFloat kAutoScrollingThreshold = 60;
 
 #pragma mark Overrides
 
+-(int)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return [_proxyDataSource tableView:tableView numberOfRowsInSection:section];
+}
+
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return [_proxyDataSource tableView:tableView cellForRowAtIndexPath:indexPath];
+}
+
 -(void)setDataSource:(id<UITableViewDataSource>)dataSource
 {
     _proxyDataSource = dataSource ? [[ProxyDataSource alloc] initWithDataSource:dataSource] : nil;

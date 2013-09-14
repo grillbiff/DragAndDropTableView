@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "DragAndDropTableView"
-  s.version      = "0.1.2"
+  s.version      = "0.1.5"
   s.summary      = "A UITableView where cells can be rearranged by drag and drop."
   s.homepage     = "https://github.com/grillbiff/DragAndDropTableView"
   s.license      = 'MIT'
