@@ -48,7 +48,7 @@
  @param tableView The table view requesting this information.
  @param section The location of the section
 */
--(CGFloat)tableView:(DragAndDropTableView *)tableView heightForEmptySection:(int)section;
+-(CGFloat)tableView:(DragAndDropTableView *)tableView heightForEmptySection:(NSInteger)section;
 @end
 
 @interface DragAndDropTableView : UITableView<UITableViewDataSource>
