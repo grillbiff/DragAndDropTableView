@@ -40,7 +40,7 @@
  @param indexPath The new indexpath where the cell was dropped.
  @param placeholderImageView The snapshot of the cell.
 */
--(void)tableView:(DragAndDropTableView *)tableView didEndDraggingCellToIndexPath:(NSIndexPath *)indexPath placeHolderView:(UIImageView *)placeholderImageView;
+-(void)tableView:(DragAndDropTableView *)tableView didEndDraggingCellAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)toIndexPath placeHolderView:(UIImageView *)placeholderImageView;
 
 /**
  Asks the delegate for the height of the distance between the header view and footer view of an empty section.
