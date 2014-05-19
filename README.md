@@ -33,5 +33,8 @@ As you can see all methods are optional. If you choose to implement the protocol
 
 See the example project for further help.
 
+## Contact 
+If you are using DragAndDropTableView I would love to hear about it. Send me a ping on [Twitter](http://twitter.com/erik_johansson)
+
 ## Licence
 DragAndDropTableView is available under the MIT license. See the LICENSE file for more info.
