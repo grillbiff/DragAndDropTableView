@@ -219,15 +219,25 @@ const static CGFloat kAutoScrollingThreshold = 60;
             [((NSObject<DragAndDropTableViewDelegate> *)self.delegate) tableView:self didEndDraggingCellAtIndexPath:_originIndexPath toIndexPath:_movingIndexPath placeHolderView:_cellSnapShotImageView];
         
         // remove image
-        [UIView animateWithDuration:.3 animations:^{
-            NSIndexPath *ipx = [self indexPathForCell:cell];
-            if(ipx)
-                _cellSnapShotImageView.frame = [self rectForRowAtIndexPath:ipx];
-        } completion:^(BOOL finished) {
+        BOOL respondsToAnimateDraggedCells = [self.dataSource respondsToSelector:@selector(tableViewShouldAnimateDraggedCells:)];
+        if(!respondsToAnimateDraggedCells ||
+           (respondsToAnimateDraggedCells && [((NSObject<DragAndDropTableViewDataSource> *)self.dataSource) tableViewShouldAnimateDraggedCells:self]))
+        {
+            [UIView animateWithDuration:.3 animations:^{
+                NSIndexPath *ipx = [self indexPathForCell:cell];
+                if(ipx)
+                    _cellSnapShotImageView.frame = [self rectForRowAtIndexPath:ipx];
+            } completion:^(BOOL finished) {
+                [_cellSnapShotImageView removeFromSuperview]; _cellSnapShotImageView = nil;
+                [self reloadData];
+            }];
+        }
+        else
+        {
             [_cellSnapShotImageView removeFromSuperview]; _cellSnapShotImageView = nil;
             [self reloadData];
-        }];
-         
+        }
+      
         _proxyDataSource.movingIndexPath = nil;
         _tempNewSectionIndexPath = nil;
     }
@@ -474,9 +484,20 @@ const static CGFloat kAutoScrollingThreshold = 60;
         return [_delegate tableView:tableView editingStyleForRowAtIndexPath:indexPath];
     else
     {
-        // if the cell is in editing mode it should return UITableViewCellEditingStyleDelete (according to the docs) otherwise no style
+        // from iOS7+ UITableView.h: "Allows customization of the editingStyle for a particular cell located at 'indexPath'. If not implemented, all editable cells will have UITableViewCellEditingStyleDelete set for them when the table has editing property set to YES."
+        // the thing is, this overrides tableView:canEditRowAtIndexPath: from UITableViewDataSource and you *can* delete rows without switching the tableView into editing mode first
         UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-        return cell.editing ? UITableViewCellEditingStyleDelete : UITableViewCellEditingStyleNone;
+        if (cell.editing || tableView.isEditing)
+            return UITableViewCellEditingStyleDelete;
+      
+        // from UITableView.h: Individual rows can opt out of having the -editing property set for them. If not implemented, all rows are assumed to be editable.
+        BOOL respondsToCanEdit = [_delegate respondsToSelector:@selector(tableView:canEditRowAtIndexPath:)];
+        if (!respondsToCanEdit ||
+            (respondsToCanEdit && [((NSObject<UITableViewDataSource> *)_delegate) tableView:tableView canEditRowAtIndexPath:indexPath])) {
+            return UITableViewCellEditingStyleDelete;
+        }
+      
+        return UITableViewCellEditingStyleNone;
     }
     
 }

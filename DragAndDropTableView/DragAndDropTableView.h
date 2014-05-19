@@ -21,6 +21,13 @@
  @param section The section index which will be created if YES is returned.
  */
 -(BOOL)canCreateNewSection:(NSInteger)section;
+
+/**
+ Asks the datasource if cells should be animated from their old position after they are dragged. Default is YES.
+ 
+ @param tableView The table view providing this information.
+ */
+-(BOOL)tableViewShouldAnimateDraggedCells:(DragAndDropTableView *)tableView;
 @end
 
 @protocol DragAndDropTableViewDelegate <NSObject>
