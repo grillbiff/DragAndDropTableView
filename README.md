@@ -24,7 +24,7 @@ DragAndDropTableView operates the same way your standard UITableView does except
 @protocol DragAndDropTableViewDelegate <NSObject>
 @optional
 -(void)tableView:(DragAndDropTableView *)tableView willBeginDraggingCellAtIndexPath:(NSIndexPath *)indexPath placeholderImageView:(UIImageView *)placeHolderImageView;
--(void)tableView:(DragAndDropTableView *)tableView didEndDraggingCellToIndexPath:(NSIndexPath *)indexPath placeHolderView:(UIImageView *)placeholderImageView;
+-(void)tableView:(DragAndDropTableView *)tableView didEndDraggingCellAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)toIndexPath placeHolderView:(UIImageView *)placeholderImageView;
 -(CGFloat)tableView:(DragAndDropTableView *)tableView heightForEmptySection:(int)section;
 @end
 ```
