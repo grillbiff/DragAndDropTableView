@@ -21,6 +21,13 @@
  @param section The section index which will be created if YES is returned.
  */
 -(BOOL)canCreateNewSection:(NSInteger)section;
+
+/**
+ Asks the datasource if cells should be animated from their old position after they are dragged. Default is YES.
+ 
+ @param tableView The table view providing this information.
+ */
+-(BOOL)tableViewShouldAnimateDraggedCells:(DragAndDropTableView *)tableView;
 @end
 
 @protocol DragAndDropTableViewDelegate <NSObject>
@@ -40,7 +47,7 @@
  @param indexPath The new indexpath where the cell was dropped.
  @param placeholderImageView The snapshot of the cell.
 */
--(void)tableView:(DragAndDropTableView *)tableView didEndDraggingCellToIndexPath:(NSIndexPath *)indexPath placeHolderView:(UIImageView *)placeholderImageView;
+-(void)tableView:(DragAndDropTableView *)tableView didEndDraggingCellAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)toIndexPath placeHolderView:(UIImageView *)placeholderImageView;
 
 /**
  Asks the delegate for the height of the distance between the header view and footer view of an empty section.

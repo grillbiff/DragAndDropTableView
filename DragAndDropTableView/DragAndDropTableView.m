@@ -167,7 +167,11 @@ const static CGFloat kAutoScrollingThreshold = 60;
         else if(_lastIndexPathValid && !_tempNewSectionIndexPath)
         {
             // check if we are above or below the "valid" table and propose a new section if supported by the delegate
-            NSInteger maxSection = [self.dataSource numberOfSectionsInTableView:self];
+            NSInteger maxSection = 1;
+            if([self.dataSource respondsToSelector:@selector(numberOfSectionsInTableView:)])
+            {
+                maxSection = [self.dataSource numberOfSectionsInTableView:self];
+            }
             NSIndexPath *proposedIndexPath = nil;
             if(_latestTouchPoint.y > [self rectForFooterInSection:maxSection-1].origin.y) //CGRectGetMaxY([self rectForFooterInSection:maxSection-1]))
             {
@@ -201,7 +205,7 @@ const static CGFloat kAutoScrollingThreshold = 60;
         }
         
     }
-    else if(UIGestureRecognizerStateEnded == gestureRecognizer.state)
+    else if(UIGestureRecognizerStateEnded == gestureRecognizer.state || UIGestureRecognizerStateCancelled == gestureRecognizer.state)
     {
         if(_autoscrollTimer)
         {
@@ -211,19 +215,29 @@ const static CGFloat kAutoScrollingThreshold = 60;
         // since anything can happen with the table structure in the following delegate call we use the cell as reference rather than the indexpath to it
         UITableViewCell *cell = [self cellForRowAtIndexPath:_movingIndexPath];
 
-        if([self.delegate respondsToSelector:@selector(tableView:didEndDraggingCellToIndexPath:placeHolderView:)])
-            [((NSObject<DragAndDropTableViewDelegate> *)self.delegate) tableView:self didEndDraggingCellToIndexPath:_movingIndexPath placeHolderView:_cellSnapShotImageView];
+        if([self.delegate respondsToSelector:@selector(tableView:didEndDraggingCellAtIndexPath:toIndexPath:placeHolderView:)])
+            [((NSObject<DragAndDropTableViewDelegate> *)self.delegate) tableView:self didEndDraggingCellAtIndexPath:_originIndexPath toIndexPath:_movingIndexPath placeHolderView:_cellSnapShotImageView];
         
         // remove image
-        [UIView animateWithDuration:.3 animations:^{
-            NSIndexPath *ipx = [self indexPathForCell:cell];
-            if(ipx)
-                _cellSnapShotImageView.frame = [self rectForRowAtIndexPath:ipx];
-        } completion:^(BOOL finished) {
+        BOOL respondsToAnimateDraggedCells = [self.dataSource respondsToSelector:@selector(tableViewShouldAnimateDraggedCells:)];
+        if(!respondsToAnimateDraggedCells ||
+           (respondsToAnimateDraggedCells && [((NSObject<DragAndDropTableViewDataSource> *)self.dataSource) tableViewShouldAnimateDraggedCells:self]))
+        {
+            [UIView animateWithDuration:.3 animations:^{
+                NSIndexPath *ipx = [self indexPathForCell:cell];
+                if(ipx)
+                    _cellSnapShotImageView.frame = [self rectForRowAtIndexPath:ipx];
+            } completion:^(BOOL finished) {
+                [_cellSnapShotImageView removeFromSuperview]; _cellSnapShotImageView = nil;
+                [self reloadData];
+            }];
+        }
+        else
+        {
             [_cellSnapShotImageView removeFromSuperview]; _cellSnapShotImageView = nil;
             [self reloadData];
-        }];
-         
+        }
+      
         _proxyDataSource.movingIndexPath = nil;
         _tempNewSectionIndexPath = nil;
     }
@@ -309,7 +323,7 @@ const static CGFloat kAutoScrollingThreshold = 60;
 
 - (void)legalizeAutoscrollDistance {
     // makes sure the autoscroll distance won't result in scrolling past the content of the scroll view
-    float minimumLegalDistance = [self contentOffset].y * -1;
+    float minimumLegalDistance = ([self contentOffset].y + self.contentInset.top) * -1;
     float maximumLegalDistance = [self contentSize].height - ([self frame].size.height + [self contentOffset].y);
     _autoscrollDistance = MAX(_autoscrollDistance, minimumLegalDistance);
     _autoscrollDistance = MIN(_autoscrollDistance, maximumLegalDistance);
@@ -367,7 +381,8 @@ const static CGFloat kAutoScrollingThreshold = 60;
         [tableView endUpdates];
     }
 
-    [_dataSource tableView:tableView moveRowAtIndexPath:sourceIndexPath toIndexPath:destinationIndexPath];
+    if ([_dataSource respondsToSelector:@selector(tableView:moveRowAtIndexPath:toIndexPath:)])
+        [_dataSource tableView:tableView moveRowAtIndexPath:sourceIndexPath toIndexPath:destinationIndexPath];
     
     // if the source section is empty after the update, a fake row must be inserted
     rows = [_dataSource tableView:tableView numberOfRowsInSection:sourceIndexPath.section];
@@ -446,7 +461,10 @@ const static CGFloat kAutoScrollingThreshold = 60;
 
     CGFloat height = 0;
     if(count > 0)
-        height = [_delegate tableView:tableView heightForRowAtIndexPath:indexPath];
+        if ([_delegate respondsToSelector:@selector(tableView:heightForRowAtIndexPath:)])
+            height = [_delegate tableView:tableView heightForRowAtIndexPath:indexPath];
+        else
+            height = tableView.rowHeight;
     else if([_delegate respondsToSelector:@selector(tableView:heightForEmptySection:)])
         height = [((NSObject<DragAndDropTableViewDelegate> *)_delegate) tableView:(DragAndDropTableView *)tableView heightForEmptySection:indexPath.section];
     else
@@ -466,9 +484,20 @@ const static CGFloat kAutoScrollingThreshold = 60;
         return [_delegate tableView:tableView editingStyleForRowAtIndexPath:indexPath];
     else
     {
-        // if the cell is in editing mode it should return UITableViewCellEditingStyleDelete (according to the docs) otherwise no style
+        // from iOS7+ UITableView.h: "Allows customization of the editingStyle for a particular cell located at 'indexPath'. If not implemented, all editable cells will have UITableViewCellEditingStyleDelete set for them when the table has editing property set to YES."
+        // the thing is, this overrides tableView:canEditRowAtIndexPath: from UITableViewDataSource and you *can* delete rows without switching the tableView into editing mode first
         UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-        return cell.editing ? UITableViewCellEditingStyleDelete : UITableViewCellEditingStyleNone;
+        if (cell.editing || tableView.isEditing)
+            return UITableViewCellEditingStyleDelete;
+      
+        // from UITableView.h: Individual rows can opt out of having the -editing property set for them. If not implemented, all rows are assumed to be editable.
+        BOOL respondsToCanEdit = [_delegate respondsToSelector:@selector(tableView:canEditRowAtIndexPath:)];
+        if (!respondsToCanEdit ||
+            (respondsToCanEdit && [((NSObject<UITableViewDataSource> *)_delegate) tableView:tableView canEditRowAtIndexPath:indexPath])) {
+            return UITableViewCellEditingStyleDelete;
+        }
+      
+        return UITableViewCellEditingStyleNone;
     }
     
 }
