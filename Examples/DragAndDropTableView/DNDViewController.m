@@ -160,7 +160,7 @@
 
 }
 
--(void)tableView:(DragAndDropTableView *)tableView didEndDraggingCellToIndexPath:(NSIndexPath *)indexPath placeHolderView:(UIImageView *)placeholderImageView
+-(void)tableView:(DragAndDropTableView *)tableView didEndDraggingCellAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)toIndexPath placeHolderView:(UIImageView *)placeholderImageView
 {
     // The cell has been dropped. Remove all empty sections (if you want to)
     NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSet];

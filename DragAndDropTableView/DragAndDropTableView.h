@@ -44,10 +44,21 @@
  Tells the delegate that the dragged table view cell has been dropped.
  
  @param tableView The table view providing this information.
- @param indexPath The new indexpath where the cell was dropped.
+ @param sourceIndexPath The initial indexpath of the cell.
+ @param toIndexPath The destination indexpath where the cell was dropped.
  @param placeholderImageView The snapshot of the cell.
 */
 -(void)tableView:(DragAndDropTableView *)tableView didEndDraggingCellAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)toIndexPath placeHolderView:(UIImageView *)placeholderImageView;
+
+/**
+ Tells the delegate that the dragged table view cell has been dropped. 
+ @deprecated This method is deprecated, please use tableView:didEndDraggingCellAtIndexPath:toIndexPath:placeHolderView:
+ 
+ @param tableView The table view providing this information.
+ @param indexPath The new indexpath where the cell was dropped.
+ @param placeholderImageView The snapshot of the cell.
+ */
+-(void)tableView:(DragAndDropTableView *)tableView didEndDraggingCellToIndexPath:(NSIndexPath *)toIndexPath placeHolderView:(UIImageView *)placeholderImageView __deprecated;
 
 /**
  Asks the delegate for the height of the distance between the header view and footer view of an empty section.

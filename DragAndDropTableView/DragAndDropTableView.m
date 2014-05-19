@@ -218,6 +218,13 @@ const static CGFloat kAutoScrollingThreshold = 60;
         if([self.delegate respondsToSelector:@selector(tableView:didEndDraggingCellAtIndexPath:toIndexPath:placeHolderView:)])
             [((NSObject<DragAndDropTableViewDelegate> *)self.delegate) tableView:self didEndDraggingCellAtIndexPath:_originIndexPath toIndexPath:_movingIndexPath placeHolderView:_cellSnapShotImageView];
         
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+        // keeping deprecated call for backwards compatibility
+        if([self.delegate respondsToSelector:@selector(tableView:didEndDraggingCellToIndexPath:placeHolderView:)])
+            [((NSObject<DragAndDropTableViewDelegate> *)self.delegate) tableView:self didEndDraggingCellToIndexPath:_movingIndexPath placeHolderView:_cellSnapShotImageView];
+#pragma clang diagnostic pop
+        
         // remove image
         BOOL respondsToAnimateDraggedCells = [self.dataSource respondsToSelector:@selector(tableViewShouldAnimateDraggedCells:)];
         if(!respondsToAnimateDraggedCells ||
