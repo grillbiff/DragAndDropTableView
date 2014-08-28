@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import </usr/include/objc/objc-class.h>
+#import <objc/runtime.h>
 
 @class ProxyDataSource;
 @class ProxyDelegate;
