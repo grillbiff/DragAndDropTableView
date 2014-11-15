@@ -50,12 +50,12 @@
 
 #pragma mark UITableViewDataSource
 
--(int)numberOfSectionsInTableView:(UITableView *)tableView
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return _datasource.count;
 }
 
--(int)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     return [[_datasource objectAtIndex:section] count];
 }

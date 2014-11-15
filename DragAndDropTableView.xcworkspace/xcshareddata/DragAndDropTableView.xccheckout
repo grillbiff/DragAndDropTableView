@@ -10,29 +10,29 @@
 	<string>DragAndDropTableView</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>862AF4A7-0360-4EBF-9077-E9DC51B6D430</key>
+		<key>E1C2AE8E5D8FC6C38389099F4B36122BDCFA5156</key>
 		<string>https://github.com/grillbiff/DragAndDropTableView.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>DragAndDropTableView.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>862AF4A7-0360-4EBF-9077-E9DC51B6D430</key>
+		<key>E1C2AE8E5D8FC6C38389099F4B36122BDCFA5156</key>
 		<string>..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>https://github.com/grillbiff/DragAndDropTableView.git</string>
 	<key>IDESourceControlProjectVersion</key>
-	<integer>110</integer>
+	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>862AF4A7-0360-4EBF-9077-E9DC51B6D430</string>
+	<string>E1C2AE8E5D8FC6C38389099F4B36122BDCFA5156</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>862AF4A7-0360-4EBF-9077-E9DC51B6D430</string>
+			<string>E1C2AE8E5D8FC6C38389099F4B36122BDCFA5156</string>
 			<key>IDESourceControlWCCName</key>
 			<string>DragAndDropTableView</string>
 		</dict>
