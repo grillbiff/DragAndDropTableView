@@ -89,6 +89,10 @@
     CGFloat _autoscrollDistance;
     NSTimer *_autoscrollTimer;
     CGPoint _latestTouchPoint;
+    
+    NSMutableArray *_pendingInserts;
+    NSMutableArray *_pendingDeletes;
+    BOOL _isMoving;
 }
 
 @end
