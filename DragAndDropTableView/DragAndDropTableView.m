@@ -147,21 +147,17 @@ const static CGFloat kAutoScrollingThreshold = 60;
     [super deleteRowsAtIndexPaths:indexPaths withRowAnimation:animation];
 }
 
-//
-//-(void)moveRowAtIndexPath:(NSIndexPath *)indexPath toIndexPath:(NSIndexPath *)newIndexPath
-//{
-//    // if the section where the row will be moved from will become empty we need to insert a placeholder cell there
-//    if([_proxyDataSource tableView:self numberOfRowsInSection:indexPath.section] == 0)
-//    {
-//        [self insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:indexPath.section]] withRowAnimation:UITableViewRowAnimationNone];
-//    }
-//    
-//    // if section where to row will be moved to is empty we need to remove the placeholder cell there
-//    if([_proxyDataSource tableView:self numberOfRowsInSection:newIndexPath.section] == 0)
-//    {
-//        [self deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:indexPath.section]] withRowAnimation:UITableViewRowAnimationNone];
-//    }
-//}
+
+-(void)moveRowAtIndexPath:(NSIndexPath *)indexPath toIndexPath:(NSIndexPath *)newIndexPath
+{
+    if(!_isMoving)
+    {
+        [_pendingInserts addObject:newIndexPath];
+        [_pendingDeletes addObject:indexPath];
+    }
+    
+    [super moveRowAtIndexPath:indexPath toIndexPath:newIndexPath];
+}
 
 -(void)onLongPressGestureRecognizerTap:(UILongPressGestureRecognizer *)gestureRecognizer
 {
