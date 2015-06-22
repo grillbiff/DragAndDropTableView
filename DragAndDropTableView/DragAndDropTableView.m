@@ -463,12 +463,6 @@ const static CGFloat kAutoScrollingThreshold = 60;
 {
     // if there are no cells in section we must fake one so that is will be possible to insert a row
     NSInteger rows = [_dataSource tableView:tableView numberOfRowsInSection:section];
-    NSInteger sections = [_dataSource numberOfSectionsInTableView:tableView];
-    
-    // if the table is completely empty, return 0 rows
-//    if(sections == 1 && rows == 0)
-//        return 0;
-    
     return rows == 0 ? 1 : rows;
 }
 
