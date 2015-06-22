@@ -79,9 +79,85 @@ const static CGFloat kAutoScrollingThreshold = 60;
     _dndLongPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(onLongPressGestureRecognizerTap:)];
     [self addGestureRecognizer:_dndLongPressGestureRecognizer];
     
+    _pendingInserts = [NSMutableArray new];
+    _pendingDeletes = [NSMutableArray new];
 }
 
 #pragma mark Actions
+
+-(void)beginUpdates
+{
+    // check which sections has placeholders before we start updating the datasource 
+    [super beginUpdates];
+}
+
+-(void)endUpdates
+{
+    // handle pending inserts
+    
+    NSInteger sections = [_proxyDataSource.dataSource numberOfSectionsInTableView:self];
+    NSMutableArray *indexPathsToDelete = [NSMutableArray new];
+    for(NSIndexPath *indexPath in _pendingInserts)
+    {
+        // if we are inserting into a empty section which has a placeholder, remove the placeholder
+        if(indexPath.section < sections && [_proxyDataSource.dataSource tableView:self numberOfRowsInSection:indexPath.section] == 1)
+        {
+            [indexPathsToDelete addObject:indexPath];
+        }
+    }
+    
+    if(indexPathsToDelete.count > 0)
+        [super deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationNone];
+
+    [_pendingInserts removeAllObjects];
+    
+    
+    // handle pending deletes
+    NSMutableArray *indexPathsToInsert = [NSMutableArray new];
+    for(NSIndexPath *indexPath in _pendingDeletes)
+    {
+        // if we are deleting the last row in the section we need to insert the placeholder
+        if(indexPath.section < sections && [_proxyDataSource.dataSource tableView:self numberOfRowsInSection:indexPath.section] == 0)
+        {
+            [indexPathsToInsert addObject:indexPath];
+        }
+    }
+    
+    if(indexPathsToInsert.count > 0)
+        [super insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationNone];
+    
+    [_pendingDeletes removeAllObjects];
+    
+    [super endUpdates];
+}
+
+-(void)insertRowsAtIndexPaths:(NSArray *)indexPaths withRowAnimation:(UITableViewRowAnimation)animation
+{
+    if(!_isMoving)
+        [_pendingInserts addObjectsFromArray:indexPaths];
+    
+    [super insertRowsAtIndexPaths:indexPaths withRowAnimation:animation];
+}
+
+-(void)deleteRowsAtIndexPaths:(NSArray *)indexPaths withRowAnimation:(UITableViewRowAnimation)animation
+{
+    if(!_isMoving)
+        [_pendingDeletes addObjectsFromArray:indexPaths];
+    
+    [super deleteRowsAtIndexPaths:indexPaths withRowAnimation:animation];
+}
+
+
+-(void)moveRowAtIndexPath:(NSIndexPath *)indexPath toIndexPath:(NSIndexPath *)newIndexPath
+{
+    if(!_isMoving)
+    {
+        [_pendingInserts addObject:newIndexPath];
+        [_pendingDeletes addObject:indexPath];
+    }
+    
+    [super moveRowAtIndexPath:indexPath toIndexPath:newIndexPath];
+}
 
 -(void)onLongPressGestureRecognizerTap:(UILongPressGestureRecognizer *)gestureRecognizer
 {
@@ -129,6 +205,8 @@ const static CGFloat kAutoScrollingThreshold = 60;
             [((NSObject<DragAndDropTableViewDelegate> *)self.delegate) tableView:self willBeginDraggingCellAtIndexPath:_movingIndexPath placeholderImageView:_cellSnapShotImageView];
         
         [self reloadRowsAtIndexPaths:[NSArray arrayWithObject:_movingIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        
+        _isMoving = YES;
         
     }
     else if(UIGestureRecognizerStateChanged == gestureRecognizer.state)
@@ -255,6 +333,7 @@ const static CGFloat kAutoScrollingThreshold = 60;
             [self reloadData];
         }
       
+        _isMoving = NO;
         _proxyDataSource.movingIndexPath = nil;
         _tempNewSectionIndexPath = nil;
     }
@@ -384,6 +463,12 @@ const static CGFloat kAutoScrollingThreshold = 60;
 {
     // if there are no cells in section we must fake one so that is will be possible to insert a row
     NSInteger rows = [_dataSource tableView:tableView numberOfRowsInSection:section];
+    NSInteger sections = [_dataSource numberOfSectionsInTableView:tableView];
+    
+    // if the table is completely empty, return 0 rows
+//    if(sections == 1 && rows == 0)
+//        return 0;
+    
     return rows == 0 ? 1 : rows;
 }
 
