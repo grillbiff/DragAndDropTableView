@@ -170,7 +170,7 @@ const static CGFloat kAutoScrollingThreshold = 60;
 
         BOOL validMove = YES;
         // Check if we are allowed to move it
-        if (![self.delegate respondsToSelector:@selector(tableView:canMoveRowAtIndexPath:)])
+        if (![self.dataSource respondsToSelector:@selector(tableView:canMoveRowAtIndexPath:)])
             validMove = NO;
         
         if (validMove && ![self.dataSource tableView:self canMoveRowAtIndexPath:_movingIndexPath])
