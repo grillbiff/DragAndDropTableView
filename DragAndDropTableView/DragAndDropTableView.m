@@ -95,7 +95,13 @@ const static CGFloat kAutoScrollingThreshold = 60;
 {
     // handle pending inserts
     
-    NSInteger sections = [_proxyDataSource.dataSource numberOfSectionsInTableView:self];
+    NSInteger sections = 1;
+    
+    if ([_proxyDataSource.dataSource respondsToSelector:@selector(numberOfSectionsInTableView:)])
+    {
+        sections = [_proxyDataSource.dataSource numberOfSectionsInTableView:self];
+    }
+    
     NSMutableArray *indexPathsToDelete = [NSMutableArray new];
     for(NSIndexPath *indexPath in _pendingInserts)
     {
