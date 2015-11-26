@@ -69,7 +69,7 @@
 -(CGFloat)tableView:(DragAndDropTableView *)tableView heightForEmptySection:(NSInteger)section;
 
 /**
- Tells the delegate that the dragged table view cell has animated into its new position. This will only be called if the datasource does not implement tableViewShouldAnimateDraggedCells: or iftableViewShouldAnimateDraggedCells: returns YES
+ Tells the delegate that the dragged table view cell has moved into its new position.
  
  @param tableView The table view providing this information
  @param sourceIndexPath The initial indexpath of the cell.

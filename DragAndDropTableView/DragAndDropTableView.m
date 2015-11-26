@@ -319,6 +319,16 @@ const static CGFloat kAutoScrollingThreshold = 60;
             [((NSObject<DragAndDropTableViewDelegate> *)self.delegate) tableView:self didEndDraggingCellToIndexPath:_movingIndexPath placeHolderView:_cellSnapShotImageView];
 #pragma clang diagnostic pop
         
+        void (^reloadIndexPaths)() = ^{
+            [self beginUpdates];
+            [self reloadRowsAtIndexPaths:[self indexPathsForVisibleRows] withRowAnimation:UITableViewRowAnimationNone];
+            [self endUpdates];
+            if([self.delegate respondsToSelector:@selector(tableView:completedDraggingCellAtIndexPath:toIndexPath:)])
+            {
+                [((NSObject<DragAndDropTableViewDelegate> *)self.delegate) tableView: self completedDraggingCellAtIndexPath: _originIndexPath toIndexPath: _movingIndexPath];
+            }
+        };
+        
         // remove image
         BOOL respondsToAnimateDraggedCells = [self.dataSource respondsToSelector:@selector(tableViewShouldAnimateDraggedCells:)];
         if(!respondsToAnimateDraggedCells ||
@@ -330,19 +340,16 @@ const static CGFloat kAutoScrollingThreshold = 60;
                     _cellSnapShotImageView.frame = [self rectForRowAtIndexPath:ipx];
             } completion:^(BOOL finished) {
                 [_cellSnapShotImageView removeFromSuperview]; _cellSnapShotImageView = nil;
-                [self beginUpdates];
-                [self reloadRowsAtIndexPaths:[self indexPathsForVisibleRows] withRowAnimation:UITableViewRowAnimationNone];
-                [self endUpdates];
-                if([self.delegate respondsToSelector:@selector(tableView:completedDraggingCellAtIndexPath:toIndexPath:)])
-                {
-                    [((NSObject<DragAndDropTableViewDelegate> *)self.delegate) tableView: self completedDraggingCellAtIndexPath: _originIndexPath toIndexPath: _movingIndexPath];
-                }
+                reloadIndexPaths();
             }];
         }
         else
         {
             [_cellSnapShotImageView removeFromSuperview]; _cellSnapShotImageView = nil;
-            [self reloadData];
+
+            dispatch_async(dispatch_get_main_queue(), ^{
+                reloadIndexPaths();
+            });
         }
       
         _isMoving = NO;
