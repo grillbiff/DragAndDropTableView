@@ -330,7 +330,13 @@ const static CGFloat kAutoScrollingThreshold = 60;
                     _cellSnapShotImageView.frame = [self rectForRowAtIndexPath:ipx];
             } completion:^(BOOL finished) {
                 [_cellSnapShotImageView removeFromSuperview]; _cellSnapShotImageView = nil;
-                [self reloadData];
+                [self beginUpdates];
+                [self reloadRowsAtIndexPaths:[self indexPathsForVisibleRows] withRowAnimation:UITableViewRowAnimationNone];
+                [self endUpdates];
+                if([self.delegate respondsToSelector:@selector(tableView:completedDraggingCellAtIndexPath:toIndexPath:)])
+                {
+                    [((NSObject<DragAndDropTableViewDelegate> *)self.delegate) tableView: self completedDraggingCellAtIndexPath: _originIndexPath toIndexPath: _movingIndexPath];
+                }
             }];
         }
         else
@@ -432,7 +438,7 @@ const static CGFloat kAutoScrollingThreshold = 60;
 }
 
 - (void)autoscrollTimerFired:(NSTimer*)timer {
-//    NSLog(@"autoscrolling: %.2f",_autoscrollDistance);
+
     [self legalizeAutoscrollDistance];
     // autoscroll by changing content offset
     CGPoint contentOffset = [self contentOffset];
@@ -442,7 +448,6 @@ const static CGFloat kAutoScrollingThreshold = 60;
     // adjust thumb position so it appears to stay still
     UIImageView *snapshot = (UIImageView *)[timer userInfo];
     snapshot.center = CGPointMake(snapshot.center.x, snapshot.center.y + _autoscrollDistance);
-//    [snapshot moveByOffset:CGPointMake(_autoscrollDistance, 0)];
 }
 
 #pragma mark -

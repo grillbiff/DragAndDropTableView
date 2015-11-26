@@ -24,6 +24,7 @@
                        [NSMutableArray array],
                        [NSMutableArray arrayWithObjects:@"e",@"f",@"g",@"h", nil],
                        [NSMutableArray arrayWithObjects:@"i",@"j",@"k",@"l", nil],
+                       [NSMutableArray arrayWithObjects:@"m",@"n",@"o",@"p", nil],
                        nil];
         _tableView = [[DragAndDropTableView alloc] initWithFrame:self.view.bounds];
         [self.view addSubview:_tableView];
@@ -118,6 +119,10 @@
     }
 }
 
+-(BOOL)tableViewShouldAnimateDraggedCells:(DragAndDropTableView *)tableView {
+    return NO;
+}
+
 #pragma mark -
 
 #pragma mark UITableViewDelegate
@@ -177,7 +182,7 @@
     [tableView endUpdates];
 }
 
--(CGFloat)tableView:tableView heightForEmptySection:(int)section
+-(CGFloat)tableView:tableView heightForEmptySection:(NSInteger)section
 {
     return 10;
 }

@@ -67,6 +67,16 @@
  @param section The location of the section
 */
 -(CGFloat)tableView:(DragAndDropTableView *)tableView heightForEmptySection:(NSInteger)section;
+
+/**
+ Tells the delegate that the dragged table view cell has animated into its new position. This will only be called if the datasource does not implement tableViewShouldAnimateDraggedCells: or iftableViewShouldAnimateDraggedCells: returns YES
+ 
+ @param tableView The table view providing this information
+ @param sourceIndexPath The initial indexpath of the cell.
+ @param toIndexPath The destination indexpath where the cell was dropped.
+ */
+-(void)tableView:(DragAndDropTableView *)tableView completedDraggingCellAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)toIndexPath;
+
 @end
 
 @interface DragAndDropTableView : UITableView<UITableViewDataSource>
